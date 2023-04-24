@@ -17,12 +17,6 @@ class TaskListPage extends StatelessWidget {
     firestore.collection('tasks').doc(id).delete();
   }
 
-//Isso é interessante para a prova (É sobre a inserção )
-// void insert'(String id, bool finished) {
-//     if (finished) {
-//       firestore.collection('tasks').add({});
-//     }
-//   }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +27,7 @@ class TaskListPage extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: firestore
               .collection('tasks')
-              .where('finished', isEqualTo: false)
+              // .where('finished', isEqualTo: false)
               .orderBy('name', descending: false)
               .snapshots(),
           builder: (context, snapshot) {
