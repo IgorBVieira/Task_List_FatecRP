@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class UserRegisterPage extends StatelessWidget {
   UserRegisterPage({super.key});
-  FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
   final TextEditingController txtEmail =
       TextEditingController(); //Controla o que é enviado pro banco
   final TextEditingController txtSenha = TextEditingController();

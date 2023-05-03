@@ -24,11 +24,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(initialRoute: '/user-login', routes: {
-      '/task-create': (context) => TaskCreatePage(),
-      '/task-list': (context) => TaskListPage(),
-      '/user-register': (context) => UserRegisterPage(),
-      '/user-login': (context) => UserLoginPage(),
-    });
+    return MaterialApp(
+        debugShowCheckedModeBanner: false, //desativa o banner de debug
+        initialRoute: '/user-login',
+        routes: {
+          '/task-create': (context) => TaskCreatePage(),
+          '/task-list': (context) => TaskListPage(),
+          '/user-register': (context) => UserRegisterPage(),
+          '/user-login': (context) => UserLoginPage(),
+        });
   }
 }

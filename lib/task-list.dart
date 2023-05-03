@@ -1,11 +1,13 @@
 // ignore_for_file: file_names
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class TaskListPage extends StatelessWidget {
   TaskListPage({super.key});
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   void update(String id, bool finished) {
     if (finished) {
@@ -17,18 +19,27 @@ class TaskListPage extends StatelessWidget {
     firestore.collection('tasks').doc(id).delete();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Tasks"),
+        actions: [
+          IconButton(
+            onPressed: () { //LogOut
+              auth.signOut();
+              Navigator.of(context).pushNamed('/user-login');
+            },
+            icon: Icon(Icons.logout),
+          )
+        ],
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: firestore
               .collection('tasks')
-              // .where('finished', isEqualTo: false)
-              .orderBy('name', descending: false)
+              .where('uid',
+                  isEqualTo: auth
+                      .currentUser!.uid) // filtro de tarefas do usuario logado
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -50,6 +61,8 @@ class TaskListPage extends StatelessWidget {
                           onChanged: (value) => update(t.id, value!),
                           value: t['finished'],
                           title: Text(t['name']),
+                          //TODO: Resolver o clique do botão da tarefa(Preenchido e não preenchido)
+
                           // subtitle: Text(t['priority']),
                         ),
                       ))
