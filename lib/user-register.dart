@@ -6,15 +6,19 @@ import 'package:flutter/material.dart';
 class UserRegisterPage extends StatelessWidget {
   UserRegisterPage({super.key});
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final TextEditingController txtEmail =
-      TextEditingController(); //Controla o que é enviado pro banco
+  final TextEditingController txtEmail = TextEditingController();
   final TextEditingController txtSenha = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("New Task"),
+        title: const Text("Registrar"),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
       ),
       body: Container(
         margin: const EdgeInsets.all(10),
@@ -37,14 +41,31 @@ class UserRegisterPage extends StatelessWidget {
             ),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  auth.createUserWithEmailAndPassword(
-                    email: txtEmail.text,
-                    password: txtSenha.text,
-                  );
-                },
-                child: const Text('Registrar'),
+              child: Container(
+                margin: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      await auth.createUserWithEmailAndPassword(
+                        email: txtEmail.text,
+                        password: txtSenha.text,
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Registrado com sucesso"),
+                        backgroundColor: Colors.green,
+                      ));
+                    } catch (e) {
+                      String message = e.toString();
+                      print(e);
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Erro ao registrar $message"),
+                        backgroundColor: Colors.red,
+                      ));
+                    }
+                    Navigator.of(context).pushReplacementNamed('/user-login');
+                  },
+                  child: const Text('Registrar'),
+                ),
               ),
             ),
           ],
