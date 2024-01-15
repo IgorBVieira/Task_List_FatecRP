@@ -26,44 +26,46 @@ class TaskListPage extends StatelessWidget {
         title: const Text("Tasks"),
         actions: [
           IconButton(
-            onPressed: () { //LogOut
+            onPressed: () {
+              //LogOut
               auth.signOut();
-              Navigator.of(context).pushNamed('/user-login');
+              Navigator.of(context).pop;
             },
             icon: Icon(Icons.logout),
-          )
+            tooltip: 'Logout',
+          ),
         ],
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: firestore
               .collection('tasks')
-              .where('uid',
-                  isEqualTo: auth
-                      .currentUser!.uid) // filtro de tarefas do usuario logado
+              .where('uid', isEqualTo: auth.currentUser!.uid)
               .snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const CircularProgressIndicator();
-            }
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) return const CircularProgressIndicator();
+            if (snapshot.hasError) return Text(snapshot.error.toString());
 
-            var tasks = snapshot.data!.docs;
-
+            var storedTasks = snapshot.data!.docs;
             return ListView(
-              children: tasks
-                  .map((t) => Dismissible(
-                        key: Key(t.id),
-                        onDismissed: (_) => delete(t.id),
+              scrollDirection: Axis.vertical,
+              children: storedTasks
+                  .map((task) => Dismissible(
+                        key: Key(task.id),
+                        onDismissed: (_) => delete(task.id),
                         background: Container(
                           color: Colors.redAccent,
                         ),
-                        child: CheckboxListTile(
-                          //Estamos dentro do map (para acessar os itens precisa do 't.')
-                          onChanged: (value) => update(t.id, value!),
-                          value: t['finished'],
-                          title: Text(t['name']),
-                          //TODO: Resolver o clique do botão da tarefa(Preenchido e não preenchido)
+                        child: Card(
+                          child: CheckboxListTile(
+                            title: Text(task['name']),
+                            subtitle: Text(task['category']),
+                            value: task['finished'],
+                            onChanged: (value) => update(task.id, value!),
+                            //TODO: Resolver o clique do botão da tarefa(Preenchido e não preenchido)
 
-                          // subtitle: Text(t['priority']),
+                            // subtitle: Text(t['priority']),
+                          ),
                         ),
                       ))
                   .toList(),
