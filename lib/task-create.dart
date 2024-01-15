@@ -5,43 +5,60 @@ import 'package:flutter/material.dart';
 
 class TaskCreatePage extends StatelessWidget {
   TaskCreatePage({super.key});
-  final FirebaseFirestore firestore =
-      FirebaseFirestore.instance; // Linha de conexão com banco
-  final TextEditingController txtName = TextEditingController();
+
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
+
+  final TextEditingController txtName = TextEditingController();
+  final TextEditingController txtCategory = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("TODO APP"),
+        title: const Text("Cria Tarefa"),
+        leading: IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(Icons.arrow_back)),
       ),
-      body: Container(
-        margin: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            TextField(
-              controller: txtName,
-              decoration: const InputDecoration(
-                hintText: "PlaceHolder",
+      body: SafeArea(
+        child: Container(
+          margin: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              TextField(
+                controller: txtName,
+                decoration: const InputDecoration(
+                  hintText: "Nome Tarefa",
+                ),
+                keyboardType: TextInputType.text,
               ),
-              keyboardType: TextInputType.text,
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  firestore.collection('tasks').add({
-                    'name': txtName.text,
-                    'finished': false,
-                    'uid': auth.currentUser!.uid //cadastrar uid
-                  }); //Insert no firebase
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Confirmar'),
+              TextField(
+                controller: txtCategory,
+                decoration: const InputDecoration(
+                  hintText: "Categoria",
+                ),
+                keyboardType: TextInputType.text,
               ),
-            ),
-          ],
+              SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    margin: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        firestore.collection('tasks').add({
+                          'name': txtName.text,
+                          'category': txtCategory.text,
+                          'finished': false,
+                          'uid': auth.currentUser!.uid 
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Confirmar'),
+                    ),
+                  )),
+            ],
+          ),
         ),
       ),
     );
