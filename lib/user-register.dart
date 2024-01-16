@@ -50,7 +50,7 @@ class UserRegisterPage extends StatelessWidget {
                         email: txtEmail.text,
                         password: txtSenha.text,
                       );
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Registrado com sucesso"),
                         backgroundColor: Colors.green,
                       ));

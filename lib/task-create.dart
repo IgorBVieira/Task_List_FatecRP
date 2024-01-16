@@ -19,7 +19,7 @@ class TaskCreatePage extends StatelessWidget {
         title: const Text("Cria Tarefa"),
         leading: IconButton(
             onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(Icons.arrow_back)),
+            icon: const Icon(Icons.arrow_back)),
       ),
       body: SafeArea(
         child: Container(
