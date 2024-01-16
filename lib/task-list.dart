@@ -10,7 +10,7 @@ class TaskListPage extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   void update(String id, bool finished) {
-    if (finished) {
+    if (finished || !finished) {
       firestore.collection('tasks').doc(id).update({'finished': finished});
     }
   }
@@ -29,9 +29,9 @@ class TaskListPage extends StatelessWidget {
             onPressed: () {
               //LogOut
               auth.signOut();
-              Navigator.of(context).pop;
+              Navigator.of(context).pushReplacementNamed('/user-login');
             },
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             tooltip: 'Logout',
           ),
         ],
@@ -62,9 +62,6 @@ class TaskListPage extends StatelessWidget {
                             subtitle: Text(task['category']),
                             value: task['finished'],
                             onChanged: (value) => update(task.id, value!),
-                            //TODO: Resolver o clique do botão da tarefa(Preenchido e não preenchido)
-
-                            // subtitle: Text(t['priority']),
                           ),
                         ),
                       ))
